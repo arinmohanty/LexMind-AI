@@ -47,7 +47,7 @@ lexmind-ai/
 |-------|--------------------------------------------------------|---------------|
 | 1     | Product foundation (PRD, market, personas, features)   | ✅ Done        |
 | 2     | System architecture, database design, AI architecture  | ✅ Done        |
-| 3     | UI/UX wireframes, navigation, component hierarchy       | ⏳ Planned     |
+| 3     | UI/UX wireframes, navigation, component hierarchy       | ✅ Done        |
 | 4     | Backend development                                     | ⏳ Planned     |
 | 5     | Frontend development                                    | ⏳ Planned     |
 | 6     | AI agent development                                    | ⏳ Planned     |
@@ -72,6 +72,13 @@ lexmind-ai/
 - [PostgreSQL Schema (DDL)](docs/phase-02-architecture/04-schema.sql)
 - [AI Architecture](docs/phase-02-architecture/05-ai-architecture.md)
 - [Architecture Decision Records](docs/phase-02-architecture/06-adrs.md)
+
+## Phase 3 Documents
+
+- [Design System](docs/phase-03-uiux/01-design-system.md)
+- [Information Architecture & Navigation](docs/phase-03-uiux/02-information-architecture.md)
+- [Wireframes (Low-Fidelity)](docs/phase-03-uiux/03-wireframes.md)
+- [Component Hierarchy & Frontend Structure](docs/phase-03-uiux/04-component-hierarchy.md)
 
 ---
 
