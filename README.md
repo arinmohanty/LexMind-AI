@@ -45,8 +45,8 @@ lexmind-ai/
 
 | Phase | Deliverable                                            | Status        |
 |-------|--------------------------------------------------------|---------------|
-| 1     | Product foundation (PRD, market, personas, features)   | 🟡 In progress |
-| 2     | System architecture, database design, AI architecture  | ⏳ Planned     |
+| 1     | Product foundation (PRD, market, personas, features)   | ✅ Done        |
+| 2     | System architecture, database design, AI architecture  | ✅ Done        |
 | 3     | UI/UX wireframes, navigation, component hierarchy       | ⏳ Planned     |
 | 4     | Backend development                                     | ⏳ Planned     |
 | 5     | Frontend development                                    | ⏳ Planned     |
@@ -63,6 +63,15 @@ lexmind-ai/
 - [User Personas](docs/phase-01-product/03-user-personas.md)
 - [Feature Breakdown](docs/phase-01-product/04-feature-breakdown.md)
 - [Product Requirements Document (PRD)](docs/phase-01-product/05-prd.md)
+
+## Phase 2 Documents
+
+- [Architecture Overview (HLD)](docs/phase-02-architecture/01-architecture-overview.md)
+- [Low-Level Design (LLD)](docs/phase-02-architecture/02-low-level-design.md)
+- [Database Design](docs/phase-02-architecture/03-database-design.md)
+- [PostgreSQL Schema (DDL)](docs/phase-02-architecture/04-schema.sql)
+- [AI Architecture](docs/phase-02-architecture/05-ai-architecture.md)
+- [Architecture Decision Records](docs/phase-02-architecture/06-adrs.md)
 
 ---
 
