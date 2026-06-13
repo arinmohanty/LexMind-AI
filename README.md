@@ -48,7 +48,7 @@ lexmind-ai/
 | 1     | Product foundation (PRD, market, personas, features)   | ✅ Done        |
 | 2     | System architecture, database design, AI architecture  | ✅ Done        |
 | 3     | UI/UX wireframes, navigation, component hierarchy       | ✅ Done        |
-| 4     | Backend development                                     | ⏳ Planned     |
+| 4     | Backend development                                     | 🟡 Core done   |
 | 5     | Frontend development                                    | ⏳ Planned     |
 | 6     | AI agent development                                    | ⏳ Planned     |
 | 7     | Analytics dashboards                                    | ⏳ Planned     |
@@ -79,6 +79,12 @@ lexmind-ai/
 - [Information Architecture & Navigation](docs/phase-03-uiux/02-information-architecture.md)
 - [Wireframes (Low-Fidelity)](docs/phase-03-uiux/03-wireframes.md)
 - [Component Hierarchy & Frontend Structure](docs/phase-03-uiux/04-component-hierarchy.md)
+
+## Phase 4 — Backend (Spring Boot 3 / Java 21)
+
+Runnable API tier under [`backend/`](backend/) — see [backend/README.md](backend/README.md).
+Auth + RBAC, cases, documents, async AI analysis orchestration, and the Case Dashboard
+read API. 70 Java files; schema via Flyway.
 
 ---
 
