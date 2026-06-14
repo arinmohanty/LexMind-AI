@@ -49,7 +49,7 @@ lexmind-ai/
 | 2     | System architecture, database design, AI architecture  | ✅ Done        |
 | 3     | UI/UX wireframes, navigation, component hierarchy       | ✅ Done        |
 | 4     | Backend development                                     | 🟡 Core done   |
-| 5     | Frontend development                                    | ⏳ Planned     |
+| 5     | Frontend development                                    | 🟡 Core done   |
 | 6     | AI agent development                                    | ⏳ Planned     |
 | 7     | Analytics dashboards                                    | ⏳ Planned     |
 | 8     | Testing (80%+ coverage)                                 | ⏳ Planned     |
@@ -85,6 +85,13 @@ lexmind-ai/
 Runnable API tier under [`backend/`](backend/) — see [backend/README.md](backend/README.md).
 Auth + RBAC, cases, documents, async AI analysis orchestration, and the Case Dashboard
 read API. 70 Java files; schema via Flyway.
+
+## Phase 5 — Frontend (React + TS + Vite)
+
+Runnable SPA under [`frontend/`](frontend/) — see [frontend/README.md](frontend/README.md).
+Auth with silent JWT refresh, role-aware shell, case repository, upload→analyze wizard, and
+the Case Analysis Dashboard (overview/timeline/facts/issues/arguments/IRAC) with run polling.
+**Typecheck + production build verified clean.**
 
 ---
 
