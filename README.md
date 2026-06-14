@@ -62,7 +62,7 @@ Runs with `LLM_PROVIDER=mock` (no API key). See [docs/phase-09-deployment](docs/
 | 7     | Analytics dashboards                                    | ✅ Done        |
 | 8     | Testing (80%+ coverage)                                 | 🟡 AI+FE run   |
 | 9     | Deployment (Docker, Railway/Render/AWS)                 | ✅ Done        |
-| 10    | Documentation (MCA synopsis, SRS, report, viva)         | ⏳ Planned     |
+| 10    | Documentation (MCA synopsis, SRS, report, viva)         | ✅ Done        |
 
 ## Phase 1 Documents
 
@@ -108,6 +108,20 @@ Document pipeline, the **7-agent graph** (Fact → Issue → Statute/Argument �
 Judge → IRAC) emitting the exact `AgentResultsPayload` the backend ingests, plus grounded RAG
 chat. **Runs offline via a deterministic mock provider** (real Claude + Qdrant by config).
 Agent-graph test + full app import **verified passing**.
+
+---
+
+## MCA Documentation (Phase 10)
+
+[Synopsis](docs/phase-10-documentation/01-synopsis.md) ·
+[SRS](docs/phase-10-documentation/02-srs.md) ·
+[Literature Survey](docs/phase-10-documentation/03-literature-survey.md) ·
+[SDD](docs/phase-10-documentation/04-sdd.md) ·
+[User Manual](docs/phase-10-documentation/05-user-manual.md) ·
+[Testing Report](docs/phase-10-documentation/06-testing-report.md) ·
+[Installation Guide](docs/phase-10-documentation/07-installation-guide.md) ·
+[Final Report](docs/phase-10-documentation/08-final-report.md) ·
+[Viva Q&A](docs/phase-10-documentation/09-viva-qa.md)
 
 ---
 
