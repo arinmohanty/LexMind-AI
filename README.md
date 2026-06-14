@@ -52,7 +52,7 @@ lexmind-ai/
 | 5     | Frontend development                                    | 🟡 Core done   |
 | 6     | AI agent development                                    | ✅ Done        |
 | 7     | Analytics dashboards                                    | ✅ Done        |
-| 8     | Testing (80%+ coverage)                                 | ⏳ Planned     |
+| 8     | Testing (80%+ coverage)                                 | 🟡 AI+FE run   |
 | 9     | Deployment (Docker, Railway/Render/AWS)                 | ⏳ Planned     |
 | 10    | Documentation (MCA synopsis, SRS, report, viva)         | ⏳ Planned     |
 

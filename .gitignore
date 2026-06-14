@@ -57,3 +57,8 @@ docker-compose.override.yml
 # ---- Logs ----
 logs/
 *.log
+
+# ---- Coverage / test artifacts ----
+.coverage
+htmlcov/
+.pytest_cache/

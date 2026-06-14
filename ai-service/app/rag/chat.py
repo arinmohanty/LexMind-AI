@@ -44,5 +44,6 @@ def answer_question(
         )
         for h in hits[:3]
     ]
-    confidence = data.get("confidence") or ("Low" if not passages else None)
+    # No grounding passages → force low confidence regardless of the model's self-report.
+    confidence = "Low" if not passages else (data.get("confidence") or "Medium")
     return ChatAnswer(answer=answer_text, citations=citations, confidence=confidence)
