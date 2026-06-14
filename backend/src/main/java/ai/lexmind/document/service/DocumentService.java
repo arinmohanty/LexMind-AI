@@ -79,6 +79,15 @@ public class DocumentService {
         return new DownloadResult(resource, doc.getOriginalFilename(), doc.getMimeType());
     }
 
+    /** Service-to-service fetch (no user context) used by the AI tier to extract text. */
+    @Transactional(readOnly = true)
+    public DownloadResult downloadInternal(UUID documentId) {
+        Document doc = documentRepository.findById(documentId)
+                .orElseThrow(() -> new NotFoundException("DOCUMENT_NOT_FOUND", "Document not found"));
+        Resource resource = storageService.load(doc.getStorageKey());
+        return new DownloadResult(resource, doc.getOriginalFilename(), doc.getMimeType());
+    }
+
     private Document loadAccessible(UUID documentId, UserPrincipal user) {
         Document doc = documentRepository.findById(documentId)
                 .orElseThrow(() -> new NotFoundException("DOCUMENT_NOT_FOUND", "Document not found"));

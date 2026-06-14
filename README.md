@@ -50,7 +50,7 @@ lexmind-ai/
 | 3     | UI/UX wireframes, navigation, component hierarchy       | ✅ Done        |
 | 4     | Backend development                                     | 🟡 Core done   |
 | 5     | Frontend development                                    | 🟡 Core done   |
-| 6     | AI agent development                                    | ⏳ Planned     |
+| 6     | AI agent development                                    | ✅ Done        |
 | 7     | Analytics dashboards                                    | ⏳ Planned     |
 | 8     | Testing (80%+ coverage)                                 | ⏳ Planned     |
 | 9     | Deployment (Docker, Railway/Render/AWS)                 | ⏳ Planned     |
@@ -92,6 +92,14 @@ Runnable SPA under [`frontend/`](frontend/) — see [frontend/README.md](fronten
 Auth with silent JWT refresh, role-aware shell, case repository, upload→analyze wizard, and
 the Case Analysis Dashboard (overview/timeline/facts/issues/arguments/IRAC) with run polling.
 **Typecheck + production build verified clean.**
+
+## Phase 6 — AI Service (FastAPI + LangGraph)
+
+Runnable AI tier under [`ai-service/`](ai-service/) — see [ai-service/README.md](ai-service/README.md).
+Document pipeline, the **7-agent graph** (Fact → Issue → Statute/Argument → Precedent/Risk →
+Judge → IRAC) emitting the exact `AgentResultsPayload` the backend ingests, plus grounded RAG
+chat. **Runs offline via a deterministic mock provider** (real Claude + Qdrant by config).
+Agent-graph test + full app import **verified passing**.
 
 ---
 
