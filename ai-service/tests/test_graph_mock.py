@@ -30,6 +30,17 @@ def test_run_analysis_produces_full_payload():
     assert all(a.status == "COMPLETED" for a in p.agent_executions)
 
 
+def test_run_analysis_produces_analytics():
+    p = _payload()
+    assert p.risks, "expected risk findings"
+    assert p.case_strength is not None and p.case_strength.overall_score is not None
+    assert p.readiness is not None
+    r = p.readiness
+    for score in (r.evidence_readiness, r.research_readiness, r.hearing_readiness,
+                  r.witness_readiness, r.overall_readiness):
+        assert score is None or 0.0 <= score <= 1.0
+
+
 def test_payload_serializes_to_camel_case_contract():
     dumped = _payload().model_dump(by_alias=True)
     assert {"totalTokens", "costUsd", "agentExecutions"} <= dumped.keys()
@@ -50,6 +61,7 @@ def test_rag_chat_is_grounded():
 
 if __name__ == "__main__":
     test_run_analysis_produces_full_payload()
+    test_run_analysis_produces_analytics()
     test_payload_serializes_to_camel_case_contract()
     test_rag_chat_is_grounded()
     p = _payload()
@@ -58,4 +70,6 @@ if __name__ == "__main__":
           "| issues:", len(p.issues),
           "| arguments:", len(p.arguments),
           "| irac:", len(p.irac),
+          "| risks:", len(p.risks),
+          "| readiness:", round(p.readiness.overall_readiness or 0, 2),
           "| tokens:", p.total_tokens)

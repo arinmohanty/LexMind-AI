@@ -189,3 +189,47 @@ export interface Irac {
   application: string;
   conclusion: string;
 }
+
+export interface CaseStrength {
+  overallScore: number | null;
+  strong: string[];
+  weak: string[];
+  missingEvidence: string[];
+  openQuestions: string[];
+}
+
+export interface Risk {
+  id: string;
+  riskType: string;
+  severity: "HIGH" | "MEDIUM" | "LOW" | null;
+  description: string;
+}
+
+export interface Readiness {
+  evidenceReadiness: number | null;
+  witnessReadiness: number | null;
+  researchReadiness: number | null;
+  hearingReadiness: number | null;
+  overallReadiness: number | null;
+}
+
+export interface CaseAnalytics {
+  strength: CaseStrength | null;
+  risks: Risk[];
+  readiness: Readiness | null;
+}
+
+export interface MatterReadiness {
+  caseId: string;
+  title: string;
+  overallReadiness: number | null;
+  highRisks: number;
+}
+
+export interface Portfolio {
+  caseCount: number;
+  avgReadiness: number | null;
+  highRiskCases: number;
+  matters: MatterReadiness[];
+  riskByType: Record<string, number>;
+}

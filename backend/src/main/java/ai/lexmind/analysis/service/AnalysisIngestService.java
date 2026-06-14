@@ -5,7 +5,14 @@ import ai.lexmind.analysis.domain.AgentExecution;
 import ai.lexmind.analysis.domain.AnalysisRun;
 import ai.lexmind.analysis.repo.AgentExecutionRepository;
 import ai.lexmind.analysis.repo.AnalysisRunRepository;
+import ai.lexmind.analytics.domain.CaseStrength;
+import ai.lexmind.analytics.domain.ReadinessScore;
+import ai.lexmind.analytics.domain.RiskAssessment;
+import ai.lexmind.analytics.repo.AnalyticsRepositories.CaseStrengthRepository;
+import ai.lexmind.analytics.repo.AnalyticsRepositories.ReadinessScoreRepository;
+import ai.lexmind.analytics.repo.AnalyticsRepositories.RiskAssessmentRepository;
 import ai.lexmind.common.error.AppExceptions.NotFoundException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import ai.lexmind.intelligence.domain.Argument;
 import ai.lexmind.intelligence.domain.CaseFact;
 import ai.lexmind.intelligence.domain.IracAnalysis;
@@ -22,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -40,6 +48,10 @@ public class AnalysisIngestService {
     private final LegalIssueRepository issueRepository;
     private final ArgumentRepository argumentRepository;
     private final IracAnalysisRepository iracRepository;
+    private final CaseStrengthRepository strengthRepository;
+    private final RiskAssessmentRepository riskRepository;
+    private final ReadinessScoreRepository readinessRepository;
+    private final ObjectMapper objectMapper;
 
     public AnalysisIngestService(AnalysisRunRepository runRepository,
                                  AgentExecutionRepository agentExecutionRepository,
@@ -47,7 +59,11 @@ public class AnalysisIngestService {
                                  TimelineEventRepository timelineRepository,
                                  LegalIssueRepository issueRepository,
                                  ArgumentRepository argumentRepository,
-                                 IracAnalysisRepository iracRepository) {
+                                 IracAnalysisRepository iracRepository,
+                                 CaseStrengthRepository strengthRepository,
+                                 RiskAssessmentRepository riskRepository,
+                                 ReadinessScoreRepository readinessRepository,
+                                 ObjectMapper objectMapper) {
         this.runRepository = runRepository;
         this.agentExecutionRepository = agentExecutionRepository;
         this.factRepository = factRepository;
@@ -55,6 +71,10 @@ public class AnalysisIngestService {
         this.issueRepository = issueRepository;
         this.argumentRepository = argumentRepository;
         this.iracRepository = iracRepository;
+        this.strengthRepository = strengthRepository;
+        this.riskRepository = riskRepository;
+        this.readinessRepository = readinessRepository;
+        this.objectMapper = objectMapper;
     }
 
     @Transactional
@@ -77,12 +97,15 @@ public class AnalysisIngestService {
         AnalysisRun run = requireRun(runId);
         UUID caseId = run.getCaseId();
 
-        // Replace prior intelligence for this case.
+        // Replace prior intelligence + analytics for this case.
         factRepository.deleteByCaseId(caseId);
         timelineRepository.deleteByCaseId(caseId);
         issueRepository.deleteByCaseId(caseId);
         argumentRepository.deleteByCaseId(caseId);
         iracRepository.deleteByCaseId(caseId);
+        strengthRepository.deleteByCaseId(caseId);
+        riskRepository.deleteByCaseId(caseId);
+        readinessRepository.deleteByCaseId(caseId);
 
         if (p.facts() != null) {
             factRepository.saveAll(p.facts().stream().map(f -> {
@@ -148,6 +171,40 @@ public class AnalysisIngestService {
             }).toList());
         }
 
+        // ---- analytics (case strength / risk / readiness) ----
+        if (p.caseStrength() != null) {
+            CaseStrength cs = new CaseStrength();
+            cs.setCaseId(caseId);
+            cs.setAnalysisRunId(runId);
+            cs.setOverallScore(toBigDecimal(p.caseStrength().overallScore()));
+            cs.setFindingsJson(writeJson(Map.of(
+                    "strong", nullToEmpty(p.caseStrength().strong()),
+                    "weak", nullToEmpty(p.caseStrength().weak()),
+                    "missingEvidence", nullToEmpty(p.caseStrength().missingEvidence()),
+                    "openQuestions", nullToEmpty(p.caseStrength().openQuestions()))));
+            strengthRepository.save(cs);
+        }
+        if (p.risks() != null) {
+            riskRepository.saveAll(p.risks().stream().map(r -> {
+                RiskAssessment ra = new RiskAssessment();
+                ra.setCaseId(caseId);
+                ra.setRiskType(defaultStr(r.riskType(), "DOCUMENTATION"));
+                ra.setSeverity(r.severity());
+                ra.setDescription(r.description() == null ? "" : r.description());
+                return ra;
+            }).toList());
+        }
+        if (p.readiness() != null) {
+            ReadinessScore rs = new ReadinessScore();
+            rs.setCaseId(caseId);
+            rs.setEvidenceReadiness(toBigDecimal(p.readiness().evidenceReadiness()));
+            rs.setWitnessReadiness(toBigDecimal(p.readiness().witnessReadiness()));
+            rs.setResearchReadiness(toBigDecimal(p.readiness().researchReadiness()));
+            rs.setHearingReadiness(toBigDecimal(p.readiness().hearingReadiness()));
+            rs.setOverallReadiness(toBigDecimal(p.readiness().overallReadiness()));
+            readinessRepository.save(rs);
+        }
+
         if (p.agentExecutions() != null) {
             agentExecutionRepository.saveAll(p.agentExecutions().stream().map(ae -> {
                 AgentExecution e = new AgentExecution();
@@ -192,5 +249,21 @@ public class AnalysisIngestService {
     private static String truncate(String v, int max) {
         if (v == null) return null;
         return v.length() <= max ? v : v.substring(0, max);
+    }
+
+    private static BigDecimal toBigDecimal(Double d) {
+        return d == null ? null : BigDecimal.valueOf(d);
+    }
+
+    private static List<String> nullToEmpty(List<String> list) {
+        return list == null ? List.of() : list;
+    }
+
+    private String writeJson(Object value) {
+        try {
+            return objectMapper.writeValueAsString(value);
+        } catch (Exception e) {
+            return "{}";
+        }
     }
 }

@@ -9,6 +9,7 @@ import { CasesListPage } from "@/features/cases/CasesListPage";
 import { CreateCasePage } from "@/features/cases/CreateCasePage";
 import { CaseWorkspace } from "@/features/dashboard/CaseWorkspace";
 import { IracPage } from "@/features/dashboard/IracPage";
+import { AnalyticsCenterPage } from "@/features/analytics/AnalyticsCenterPage";
 import { LandingPage } from "@/pages/public/LandingPage";
 import { NotFoundPage } from "@/pages/NotFoundPage";
 import { PlaceholderPage } from "@/pages/PlaceholderPage";
@@ -31,7 +32,7 @@ export default function App() {
               <Route path="cases/:caseId/analysis" element={<CaseWorkspace />} />
               <Route path="cases/:caseId/irac" element={<IracPage />} />
               <Route path="research" element={<PlaceholderPage title="Research" />} />
-              <Route path="analytics" element={<PlaceholderPage title="Analytics Center" />} />
+              <Route path="analytics" element={<AnalyticsCenterPage />} />
               <Route path="notes" element={<PlaceholderPage title="Research Notes" />} />
               <Route path="settings" element={<PlaceholderPage title="Settings" />} />
               <Route path="admin/*" element={<PlaceholderPage title="Admin" />} />

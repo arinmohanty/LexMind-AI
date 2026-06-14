@@ -14,11 +14,18 @@ from app.llm.base import LLMProvider
 from app.schemas import (
     AgentExecutionPayload,
     ArgumentPayload,
+    CaseStrengthPayload,
     FactPayload,
     IracPayload,
     IssuePayload,
+    ReadinessPayload,
+    RiskPayload,
     TimelinePayload,
 )
+
+
+def _clamp(value: float) -> float:
+    return round(max(0.0, min(1.0, value)), 3)
 
 
 def _execute(state: AgentState, llm: LLMProvider, agent_type: str, system: str, user: str) -> dict:
@@ -108,10 +115,25 @@ def argument_builder(state: AgentState, llm: LLMProvider) -> None:
         ))
 
 
-# ---- Agent 6: Risk Analysis (telemetry-only) ----
+# ---- Agent 6: Risk Analysis (feeds risks + case strength) ----
 def risk_analysis(state: AgentState, llm: LLMProvider) -> None:
-    _execute(state, llm, "RISK_ANALYSIS", P.RISK_SYSTEM,
-             P.user_with_context("Identify weaknesses, contradictions, missing documents.", state.context))
+    data = _execute(state, llm, "RISK_ANALYSIS", P.RISK_SYSTEM,
+                    P.user_with_context("Identify weaknesses, contradictions, missing documents.", state.context))
+    for r in data.get("risks", []):
+        state.risks.append(RiskPayload(
+            risk_type=(r.get("riskType") or "DOCUMENTATION").upper(),
+            severity=(r.get("severity") or None),
+            description=r.get("description", ""),
+        ))
+    cs = data.get("caseStrength")
+    if isinstance(cs, dict):
+        state.case_strength = CaseStrengthPayload(
+            overall_score=cs.get("overall"),
+            strong=cs.get("strong", []),
+            weak=cs.get("weak", []),
+            missing_evidence=cs.get("missingEvidence", []),
+            open_questions=cs.get("openQuestions", []),
+        )
 
 
 # ---- Agent 7: Judge Perspective (telemetry-only) ----
@@ -138,6 +160,32 @@ def irac_composer(state: AgentState, llm: LLMProvider) -> None:
         pass
 
 
+# ---- Analytics synthesis (deterministic; no LLM call → no agent_execution row) ----
+def analytics_synthesis(state: AgentState, llm: LLMProvider) -> None:
+    """Derive litigation-readiness from the available analysis signals (Analytics Center)."""
+    established = sum(1 for f in state.facts if f.fact_status == "ESTABLISHED")
+    missing = sum(1 for f in state.facts if f.fact_status == "MISSING")
+    disputed = sum(1 for f in state.facts if f.fact_status == "DISPUTED")
+
+    evidence_readiness = _clamp((established + 1) / (established + missing + disputed + 2))
+    research_readiness = _clamp(len(state.issues) / 5.0)
+    hearing_readiness = _clamp(len(state.arguments) / 6.0)
+    # Witnesses are produced by a later agent; approximate from established facts for now.
+    witness_readiness = _clamp(established / 6.0)
+    overall = _clamp((evidence_readiness + research_readiness + hearing_readiness + witness_readiness) / 4)
+
+    state.readiness = ReadinessPayload(
+        evidence_readiness=evidence_readiness,
+        witness_readiness=witness_readiness,
+        research_readiness=research_readiness,
+        hearing_readiness=hearing_readiness,
+        overall_readiness=overall,
+    )
+    # Fallback case-strength if the risk agent did not provide one.
+    if state.case_strength is None:
+        state.case_strength = CaseStrengthPayload(overall_score=overall)
+
+
 # Topological order honoring the dependency graph (AI architecture §4).
 PIPELINE = [
     fact_extraction,
@@ -148,4 +196,5 @@ PIPELINE = [
     risk_analysis,
     judge_perspective,
     irac_composer,
+    analytics_synthesis,
 ]

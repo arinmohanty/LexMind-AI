@@ -7,4 +7,6 @@ export const queryKeys = {
   analysisRun: (runId: string) => ["analysis", "run", runId] as const,
   dashboard: (caseId: string, section: string) => ["dashboard", caseId, section] as const,
   irac: (caseId: string) => ["irac", caseId] as const,
+  caseAnalytics: (caseId: string) => ["analytics", "case", caseId] as const,
+  portfolio: () => ["analytics", "portfolio"] as const,
 };

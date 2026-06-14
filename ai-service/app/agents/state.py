@@ -10,9 +10,12 @@ from app.schemas import (
     AgentExecutionPayload,
     AgentResultsPayload,
     ArgumentPayload,
+    CaseStrengthPayload,
     FactPayload,
     IracPayload,
     IssuePayload,
+    ReadinessPayload,
+    RiskPayload,
     TimelinePayload,
 )
 
@@ -30,6 +33,9 @@ class AgentState:
     issues: list[IssuePayload] = field(default_factory=list)
     arguments: list[ArgumentPayload] = field(default_factory=list)
     irac: list[IracPayload] = field(default_factory=list)
+    risks: list[RiskPayload] = field(default_factory=list)
+    case_strength: CaseStrengthPayload | None = None
+    readiness: ReadinessPayload | None = None
     agent_executions: list[AgentExecutionPayload] = field(default_factory=list)
     total_tokens: int = 0
     cost_usd: float = 0.0
@@ -50,6 +56,9 @@ class AgentState:
             issues=self.issues,
             arguments=self.arguments,
             irac=self.irac,
+            case_strength=self.case_strength,
+            risks=self.risks,
+            readiness=self.readiness,
             agent_executions=self.agent_executions,
         )
 

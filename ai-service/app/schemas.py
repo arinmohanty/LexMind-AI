@@ -67,6 +67,28 @@ class IracPayload(CamelModel):
     conclusion: str
 
 
+class CaseStrengthPayload(CamelModel):
+    overall_score: float | None = None
+    strong: list[str] = Field(default_factory=list)
+    weak: list[str] = Field(default_factory=list)
+    missing_evidence: list[str] = Field(default_factory=list)
+    open_questions: list[str] = Field(default_factory=list)
+
+
+class RiskPayload(CamelModel):
+    risk_type: str                            # PROCEDURAL | EVIDENTIARY | JURISDICTION | DOCUMENTATION
+    severity: str | None = None               # HIGH | MEDIUM | LOW
+    description: str
+
+
+class ReadinessPayload(CamelModel):
+    evidence_readiness: float | None = None
+    witness_readiness: float | None = None
+    research_readiness: float | None = None
+    hearing_readiness: float | None = None
+    overall_readiness: float | None = None
+
+
 class AgentExecutionPayload(CamelModel):
     agent_type: str
     status: str = "COMPLETED"                 # COMPLETED | FAILED
@@ -86,6 +108,9 @@ class AgentResultsPayload(CamelModel):
     issues: list[IssuePayload] = Field(default_factory=list)
     arguments: list[ArgumentPayload] = Field(default_factory=list)
     irac: list[IracPayload] = Field(default_factory=list)
+    case_strength: CaseStrengthPayload | None = None
+    risks: list[RiskPayload] = Field(default_factory=list)
+    readiness: ReadinessPayload | None = None
     agent_executions: list[AgentExecutionPayload] = Field(default_factory=list)
 
 

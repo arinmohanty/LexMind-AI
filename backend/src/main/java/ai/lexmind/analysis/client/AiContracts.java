@@ -30,6 +30,15 @@ public final class AiContracts {
 
     public record IracPayload(String issue, String rule, String application, String conclusion) {}
 
+    public record CaseStrengthPayload(Double overallScore, List<String> strong, List<String> weak,
+                                      List<String> missingEvidence, List<String> openQuestions) {}
+
+    public record RiskPayload(String riskType, String severity, String description) {}
+
+    public record ReadinessPayload(Double evidenceReadiness, Double witnessReadiness,
+                                   Double researchReadiness, Double hearingReadiness,
+                                   Double overallReadiness) {}
+
     public record AgentExecutionPayload(String agentType, String status, Integer latencyMs,
                                         Long tokens, String model, String outputJson,
                                         String errorMessage) {}
@@ -44,6 +53,9 @@ public final class AiContracts {
             List<IssuePayload> issues,
             List<ArgumentPayload> arguments,
             List<IracPayload> irac,
+            CaseStrengthPayload caseStrength,
+            List<RiskPayload> risks,
+            ReadinessPayload readiness,
             List<AgentExecutionPayload> agentExecutions
     ) {}
 

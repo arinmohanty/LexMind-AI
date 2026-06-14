@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAnalysisRun, useStartAnalysis } from "@/features/analysis/hooks";
 import { useCase } from "@/features/cases/hooks";
+import { AnalyticsTab } from "@/features/analytics/AnalyticsTab";
 import {
   ArgumentsTab,
   FactsTab,
@@ -23,6 +24,7 @@ const TABS = [
   ["issues", "Issues"],
   ["arguments", "Arguments"],
   ["irac", "IRAC"],
+  ["analytics", "Analytics"],
 ] as const;
 
 export function CaseWorkspace() {
@@ -108,6 +110,7 @@ export function CaseWorkspace() {
         <TabsContent value="issues"><IssuesTab caseId={caseId} /></TabsContent>
         <TabsContent value="arguments"><ArgumentsTab caseId={caseId} /></TabsContent>
         <TabsContent value="irac"><IracView caseId={caseId} /></TabsContent>
+        <TabsContent value="analytics"><AnalyticsTab caseId={caseId} /></TabsContent>
       </Tabs>
     </div>
   );
