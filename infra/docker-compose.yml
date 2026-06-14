@@ -1,0 +1,82 @@
+# LexMind AI — full local stack.
+#   cp .env.example .env   &&   docker compose up --build
+# Frontend:  http://localhost:8081   ·  Backend API: http://localhost:8080 (Swagger: /swagger-ui.html)
+# AI service: http://localhost:8000  ·  Qdrant: http://localhost:6333
+
+name: lexmind
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${DB_NAME:-lexmind}
+      POSTGRES_USER: ${DB_USER:-lexmind}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-lexmind}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-lexmind} -d ${DB_NAME:-lexmind}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    ports:
+      - "6333:6333"
+    volumes:
+      - qdrant_storage:/qdrant/storage
+    restart: unless-stopped
+
+  ai-service:
+    build:
+      context: ../ai-service
+    environment:
+      LLM_PROVIDER: ${LLM_PROVIDER:-mock}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      LLM_MODEL_STRONG: ${LLM_MODEL_STRONG:-claude-opus-4-8}
+      QDRANT_URL: http://qdrant:6333
+      INTERNAL_SERVICE_TOKEN: ${INTERNAL_SERVICE_TOKEN:-dev-internal-service-token}
+      BACKEND_BASE_URL: http://backend:8080
+    depends_on:
+      - qdrant
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ../backend
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DB_URL: jdbc:postgresql://postgres:5432/${DB_NAME:-lexmind}
+      DB_USERNAME: ${DB_USER:-lexmind}
+      DB_PASSWORD: ${DB_PASSWORD:-lexmind}
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-prod-please-use-a-strong-256-bit-secret}
+      AI_SERVICE_URL: http://ai-service:8000
+      AI_SERVICE_TOKEN: ${INTERNAL_SERVICE_TOKEN:-dev-internal-service-token}
+      STORAGE_LOCAL_PATH: /app/data/uploads
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:8081}
+    volumes:
+      - uploads:/app/data/uploads
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      ai-service:
+        condition: service_started
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ../frontend
+    ports:
+      - "8081:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  qdrant_storage:
+  uploads:

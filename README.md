@@ -28,6 +28,14 @@ lexmind-ai/
     └── phase-01-product/
 ```
 
+## Run it (full stack)
+
+```bash
+cd infra && cp .env.example .env && docker compose up --build
+# App: http://localhost:8081 · API: http://localhost:8080/swagger-ui.html · AI: http://localhost:8000/docs
+```
+Runs with `LLM_PROVIDER=mock` (no API key). See [docs/phase-09-deployment](docs/phase-09-deployment/deployment.md).
+
 ## Technology Stack
 
 | Layer        | Technology                                                              |
@@ -53,7 +61,7 @@ lexmind-ai/
 | 6     | AI agent development                                    | ✅ Done        |
 | 7     | Analytics dashboards                                    | ✅ Done        |
 | 8     | Testing (80%+ coverage)                                 | 🟡 AI+FE run   |
-| 9     | Deployment (Docker, Railway/Render/AWS)                 | ⏳ Planned     |
+| 9     | Deployment (Docker, Railway/Render/AWS)                 | ✅ Done        |
 | 10    | Documentation (MCA synopsis, SRS, report, viva)         | ⏳ Planned     |
 
 ## Phase 1 Documents

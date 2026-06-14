@@ -1,0 +1,10 @@
+# Production profile overrides (used in Docker / cloud).
+spring:
+  jpa:
+    properties:
+      hibernate:
+        format_sql: false
+logging:
+  level:
+    ai.lexmind: INFO
+    org.springframework: WARN
