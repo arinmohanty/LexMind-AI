@@ -1,128 +1,173 @@
 # LexMind AI
 
-**Legal Intelligence, Case Analysis & Litigation Strategy Platform**
+> Production-grade full-stack platform for legal intelligence, case analysis, and AI-assisted litigation workflow.
 
-LexMind AI is a production-grade legal technology platform that ingests legal documents
-(FIRs, charge sheets, judgments, petitions, affidavits, contracts, written statements,
-evidence and witness records) and transforms them into **structured legal intelligence
-dashboards** for law students, advocates, legal researchers, and law firms.
-
-It is not a legal chatbot, a document summarizer, or a CRUD app. It is a **Legal
-Operating System for case analysis** — organizing legal thinking, accelerating research,
-and assisting litigation strategy and legal education.
-
-> ⚖️ **Disclaimer:** LexMind AI assists with legal analysis and education. It does **not**
-> provide legal advice and is **not** a substitute for a qualified advocate.
+[![Java](https://img.shields.io/badge/Java-21-ED8B00?style=flat&logo=openjdk)](https://www.java.com/)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3-6DB33F?style=flat&logo=springboot)](https://spring.io/projects/spring-boot)
+[![React](https://img.shields.io/badge/React-18-61DAFB?style=flat&logo=react)](https://react.dev/)
+[![Python](https://img.shields.io/badge/Python-3.11-3776AB?style=flat&logo=python)](https://python.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?style=flat&logo=postgresql)](https://www.postgresql.org/)
+[![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=flat&logo=docker)](https://www.docker.com/)
 
 ---
 
-## Monorepo Structure
+## The Problem It Solves
 
+Legal work is often buried in fragmented documents, inconsistent case notes, and disconnected research workflows. Most existing tools are either:
+
+- basic document stores with no analytical depth
+- generic chat interfaces with weak grounding
+- rigid systems that do not support multi-step case reasoning
+
+LexMind AI closes that gap. It turns raw legal material into structured, intelligent case analysis with a modern software architecture behind it.
+
+---
+
+## Why This Project Stands Out
+
+### Engineering Depth
+
+This is not a toy prototype. The system is designed as a modular, production-minded platform with:
+
+- a secure backend for users, cases, permissions, and orchestration
+- a React-based frontend for workflow-driven interaction and analytics
+- a Python AI service for document processing, retrieval, and agent-based reasoning
+- containerized deployment for local and production-style environments
+
+### Technical Choices
+
+The architecture is intentionally split across three services to keep concerns isolated while preserving strong integration:
+
+| Layer | Choice | Why It Matters |
+|---|---|---|
+| Frontend | React + TypeScript + Vite | Fast iteration, strong typing, modern DX |
+| Backend | Java 21 + Spring Boot 3 | Enterprise-grade APIs, strong validation, scalable service design |
+| AI Service | Python + FastAPI + LangGraph | Flexible orchestration for agent workflows and RAG |
+| Data | PostgreSQL + Qdrant | Relational persistence plus vector search |
+| Delivery | Docker Compose | Consistent local deployment and environment parity |
+
+---
+
+## Core Capabilities
+
+### Case Intelligence Platform
+- document ingestion for legal files and evidence material
+- structured workspace for case-related analysis
+- role-based access control and secure authentication
+
+### AI-Powered Analysis
+- multi-agent analysis graph for fact, issue, argument, and IRAC-style reasoning
+- retrieval-augmented chat grounded in uploaded documents
+- dashboard generation for case insights and analysis results
+
+### Product Experience
+- modern, responsive interface for legal workflows
+- upload-to-analysis lifecycle for end-to-end case handling
+- clean separation between UI, business logic, and AI orchestration
+
+---
+
+## Architecture
+
+```text
+┌──────────────────────────────────────────────┐
+│                  Frontend                    │
+│ React + TypeScript + Vite + Tailwind CSS     │
+└──────────────────────┬───────────────────────┘
+                       │ REST APIs
+                       ▼
+┌──────────────────────────────────────────────┐
+│                   Backend                     │
+│ Java 21 + Spring Boot + Spring Security     │
+│ Auth, RBAC, cases, documents, orchestration │
+└──────────────────────┬───────────────────────┘
+                       │ async integration
+                       ▼
+┌──────────────────────────────────────────────┐
+│                 AI Service                   │
+│ Python + FastAPI + LangGraph + RAG          │
+│ document processing, retrieval, analysis     │
+└──────────────────────────────────────────────┘
 ```
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Frontend | React, TypeScript, Vite, Tailwind CSS, React Query, React Router, Recharts |
+| Backend | Java 21, Spring Boot 3, Spring Security, JWT, Spring Data JPA |
+| AI Service | Python, FastAPI, LangGraph, RAG, vector search |
+| Data Stores | PostgreSQL, Qdrant |
+| Document Processing | OCR, PDF/DOCX parsing, chunking, embeddings |
+| DevOps | Docker, Docker Compose |
+| API Layer | OpenAPI / Swagger UI |
+
+---
+
+## Repository Structure
+
+```text
 lexmind-ai/
-├── frontend/      # React 18 + TypeScript + Vite + TailwindCSS + ShadCN UI
-├── backend/       # Java 21 + Spring Boot 3 (REST, Security/JWT, JPA)
-├── ai-service/    # Python + FastAPI + LangGraph (agents, RAG, OCR)
-├── infra/         # Docker, docker-compose, env, CI/CD
-└── docs/          # PRD, SRS, architecture, ER diagrams, MCA report, etc.
-    └── phase-01-product/
+├── frontend/      # React-based application shell and workflows
+├── backend/       # Spring Boot API, security, persistence, orchestration
+├── ai-service/    # FastAPI AI service with LangGraph and RAG
+├── infra/         # Docker Compose and deployment assets
+└── docs/          # Product, architecture, UX, and delivery documentation
 ```
 
-## Run it (full stack)
+---
+
+## Quick Start
+
+### Full-stack local run with Docker
 
 ```bash
-cd infra && cp .env.example .env && docker compose up --build
-# App: http://localhost:8081 · API: http://localhost:8080/swagger-ui.html · AI: http://localhost:8000/docs
+cd infra
+docker compose up --build
 ```
-Runs with `LLM_PROVIDER=mock` (no API key). See [docs/phase-09-deployment](docs/phase-09-deployment/deployment.md).
 
-## Technology Stack
+Once running:
 
-| Layer        | Technology                                                              |
-|--------------|-------------------------------------------------------------------------|
-| Frontend     | React, TypeScript, Vite, TailwindCSS, ShadCN UI, React Query, Recharts  |
-| Backend      | Java 21, Spring Boot 3, Spring Security, JWT, Spring Data JPA, REST      |
-| AI Service   | Python, FastAPI, LangGraph, RAG, LLM integration                        |
-| Database     | PostgreSQL                                                              |
-| Vector DB    | Qdrant                                                                   |
-| Doc Pipeline | OCR (Tesseract), PDF/DOCX parsing, metadata extraction                  |
-| DevOps       | Docker, Docker Compose, GitHub Actions                                  |
-| Docs/API     | Swagger / OpenAPI                                                       |
+- Frontend: http://localhost:8081
+- Backend API: http://localhost:8080/swagger-ui.html
+- AI Service: http://localhost:8000/docs
 
-## Build Roadmap (10 Phases)
+### Individual services
 
-| Phase | Deliverable                                            | Status        |
-|-------|--------------------------------------------------------|---------------|
-| 1     | Product foundation (PRD, market, personas, features)   | ✅ Done        |
-| 2     | System architecture, database design, AI architecture  | ✅ Done        |
-| 3     | UI/UX wireframes, navigation, component hierarchy       | ✅ Done        |
-| 4     | Backend development                                     | 🟡 Core done   |
-| 5     | Frontend development                                    | 🟡 Core done   |
-| 6     | AI agent development                                    | ✅ Done        |
-| 7     | Analytics dashboards                                    | ✅ Done        |
-| 8     | Testing (80%+ coverage)                                 | 🟡 AI+FE run   |
-| 9     | Deployment (Docker, Railway/Render/AWS)                 | ✅ Done        |
-| 10    | Documentation (MCA synopsis, SRS, report, viva)         | ✅ Done        |
+- Frontend: see [frontend/README.md](frontend/README.md)
+- Backend: see [backend/README.md](backend/README.md)
+- AI Service: see [ai-service/README.md](ai-service/README.md)
 
-## Phase 1 Documents
+---
+
+## Delivery Roadmap
+
+| Phase | Focus | Status |
+|---|---|---|
+| 1 | Product definition and requirements | ✅ Completed |
+| 2 | Architecture, data design, and AI design | ✅ Completed |
+| 3 | UI/UX system and wireframes | ✅ Completed |
+| 4 | Backend platform and APIs | ✅ Core implemented |
+| 5 | Frontend experience and dashboards | ✅ Core implemented |
+| 6 | AI agents, analysis graph, and RAG | ✅ Implemented |
+| 7 | Analytics and intelligence surfaces | ✅ Implemented |
+| 8 | Testing and reliability | 🟡 In progress |
+| 9 | Deployment and containerization | ✅ Completed |
+| 10 | Documentation and capstone deliverables | ✅ Completed |
+
+---
+
+## Documentation
 
 - [Problem Statement](docs/phase-01-product/01-problem-statement.md)
 - [Market Analysis](docs/phase-01-product/02-market-analysis.md)
-- [User Personas](docs/phase-01-product/03-user-personas.md)
-- [Feature Breakdown](docs/phase-01-product/04-feature-breakdown.md)
-- [Product Requirements Document (PRD)](docs/phase-01-product/05-prd.md)
-
-## Phase 2 Documents
-
-- [Architecture Overview (HLD)](docs/phase-02-architecture/01-architecture-overview.md)
-- [Low-Level Design (LLD)](docs/phase-02-architecture/02-low-level-design.md)
-- [Database Design](docs/phase-02-architecture/03-database-design.md)
-- [PostgreSQL Schema (DDL)](docs/phase-02-architecture/04-schema.sql)
+- [PRD](docs/phase-01-product/05-prd.md)
+- [Architecture Overview](docs/phase-02-architecture/01-architecture-overview.md)
 - [AI Architecture](docs/phase-02-architecture/05-ai-architecture.md)
-- [Architecture Decision Records](docs/phase-02-architecture/06-adrs.md)
-
-## Phase 3 Documents
-
-- [Design System](docs/phase-03-uiux/01-design-system.md)
-- [Information Architecture & Navigation](docs/phase-03-uiux/02-information-architecture.md)
-- [Wireframes (Low-Fidelity)](docs/phase-03-uiux/03-wireframes.md)
-- [Component Hierarchy & Frontend Structure](docs/phase-03-uiux/04-component-hierarchy.md)
-
-## Phase 4 — Backend (Spring Boot 3 / Java 21)
-
-Runnable API tier under [`backend/`](backend/) — see [backend/README.md](backend/README.md).
-Auth + RBAC, cases, documents, async AI analysis orchestration, and the Case Dashboard
-read API. 70 Java files; schema via Flyway.
-
-## Phase 5 — Frontend (React + TS + Vite)
-
-Runnable SPA under [`frontend/`](frontend/) — see [frontend/README.md](frontend/README.md).
-Auth with silent JWT refresh, role-aware shell, case repository, upload→analyze wizard, and
-the Case Analysis Dashboard (overview/timeline/facts/issues/arguments/IRAC) with run polling.
-**Typecheck + production build verified clean.**
-
-## Phase 6 — AI Service (FastAPI + LangGraph)
-
-Runnable AI tier under [`ai-service/`](ai-service/) — see [ai-service/README.md](ai-service/README.md).
-Document pipeline, the **7-agent graph** (Fact → Issue → Statute/Argument → Precedent/Risk →
-Judge → IRAC) emitting the exact `AgentResultsPayload` the backend ingests, plus grounded RAG
-chat. **Runs offline via a deterministic mock provider** (real Claude + Qdrant by config).
-Agent-graph test + full app import **verified passing**.
+- [Deployment Guide](docs/phase-09-deployment/deployment.md)
 
 ---
 
-## MCA Documentation (Phase 10)
-
-[Synopsis](docs/phase-10-documentation/01-synopsis.md) ·
-[SRS](docs/phase-10-documentation/02-srs.md) ·
-[Literature Survey](docs/phase-10-documentation/03-literature-survey.md) ·
-[SDD](docs/phase-10-documentation/04-sdd.md) ·
-[User Manual](docs/phase-10-documentation/05-user-manual.md) ·
-[Testing Report](docs/phase-10-documentation/06-testing-report.md) ·
-[Installation Guide](docs/phase-10-documentation/07-installation-guide.md) ·
-[Final Report](docs/phase-10-documentation/08-final-report.md) ·
-[Viva Q&A](docs/phase-10-documentation/09-viva-qa.md)
-
----
-
-_LexMind AI — built as an MCA capstone, engineered to production standards._
+LexMind AI is built with precision, structure, and a strong engineering mindset — blending legal domain intelligence with modern software architecture and AI orchestration.
